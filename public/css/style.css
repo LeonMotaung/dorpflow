@@ -1,0 +1,138 @@
+/**
+ * DorpFlow ERP - Main Custom CSS overrides
+ */
+
+/* Color overrides for Bootstrap text utilities */
+.text-primary {
+    color: rgb(10, 43, 76) !important;
+}
+
+/* Unified Glass cards */
+.glass-card {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(226, 232, 240, 0.8);
+    box-shadow: 0 8px 30px rgba(10, 43, 76, 0.02);
+}
+
+/* Button overrides */
+.btn-custom {
+    font-weight: 600;
+    border-radius: 10px;
+    padding: 10px 20px;
+    transition: all 0.3s;
+}
+
+.btn-primary-custom {
+    background-color: var(--primary);
+    border-color: var(--primary);
+    color: #fff;
+}
+.btn-primary-custom:hover {
+    background-color: var(--primary-light);
+    border-color: var(--primary-light);
+    color: #fff;
+}
+
+.btn-accent-custom {
+    background-color: var(--accent);
+    border-color: var(--accent);
+    color: #0f172a;
+}
+.btn-accent-custom:hover {
+    background-color: #00a892;
+    border-color: #00a892;
+    color: #0f172a;
+}
+
+/* Leaflet maps custom height and styling */
+.leaflet-container {
+    font-family: inherit;
+}
+.leaflet-popup-content-wrapper {
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(10, 43, 76, 0.08);
+}
+
+/* Custom Flat CSS Modal Styles (No Nesting) */
+.df-modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(10, 43, 76, 0.5);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    z-index: 9999;
+    display: none; /* Controlled by JS display switch */
+    align-items: center;
+    justify-content: center;
+}
+
+.df-modal-card {
+    background: #ffffff;
+    border: 1px solid #E2E8F0;
+    border-radius: 16px;
+    max-width: 460px;
+    width: 90%;
+    box-shadow: 0 20px 50px rgba(10, 43, 76, 0.15);
+    overflow: hidden;
+    animation: dfModalFadeIn 0.2s ease-out;
+}
+
+.df-modal-header {
+    padding: 18px 24px;
+    border-bottom: 1px solid #E2E8F0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.df-modal-header h5 {
+    margin: 0;
+    font-family: 'Outfit', sans-serif;
+    font-weight: 700;
+    font-size: 1.15rem;
+}
+
+.df-modal-close-btn {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: #94A3B8;
+    cursor: pointer;
+    line-height: 1;
+    padding: 0;
+}
+
+.df-modal-close-btn:hover {
+    color: #1E293B;
+}
+
+.df-modal-body {
+    padding: 24px;
+    font-size: 0.95rem;
+    color: #475569;
+    line-height: 1.6;
+}
+
+.df-modal-footer {
+    padding: 16px 24px;
+    background: #F8FAFC;
+    border-top: 1px solid #E2E8F0;
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+}
+
+@keyframes dfModalFadeIn {
+    from {
+        transform: scale(0.95);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
