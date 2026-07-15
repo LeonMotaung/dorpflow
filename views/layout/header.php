@@ -154,7 +154,7 @@ $tenant = getActiveTenant();
     <!-- SIDEBAR -->
     <nav id="sidebar">
         <div class="sidebar-header">
-            <img src="<?php echo APP_URL; ?>/dorpflow.png" alt="DorpFlow Logo" style="max-height: 30px;" class="mb-2">
+            <img src="<?php echo getMunicipalityLogo(); ?>" alt="Logo" style="max-height: 35px; border-radius: 6px;" class="mb-2">
             <span class="text-muted d-block" style="font-size: 0.7rem; letter-spacing: 0.05em; font-weight:800;">
                 <?php echo strtoupper($tenant); ?> CONSOLE
             </span>
@@ -183,6 +183,9 @@ $tenant = getActiveTenant();
                     <li><a href="<?php echo APP_URL; ?>/public/index.php/admin/iot-telemetry"><i class="fa-solid fa-gauge-high"></i> IoT Telemetry</a></li>
                     <li><a href="<?php echo APP_URL; ?>/public/index.php/admin/scm"><i class="fa-solid fa-building-columns"></i> SCM Suppliers</a></li>
                     <li><a href="<?php echo APP_URL; ?>/public/index.php/admin/whatsapp-bot"><i class="fa-brands fa-whatsapp"></i> WhatsApp Bot</a></li>
+                    <?php if ($user['role'] === 'Municipality Administrator'): ?>
+                        <li><a href="<?php echo APP_URL; ?>/public/index.php/admin/settings"><i class="fa-solid fa-sliders"></i> Muni Settings</a></li>
+                    <?php endif; ?>
                 <?php elseif ($user['role'] === 'Technician'): ?>
                     <li><a href="<?php echo APP_URL; ?>/public/index.php/technician/dashboard"><i class="fa-solid fa-truck-pickup"></i> Today's Dispatches</a></li>
                 <?php elseif ($user['role'] === 'Resident'): ?>

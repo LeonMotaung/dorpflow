@@ -170,4 +170,104 @@ class AdminController extends Controller {
 
         $this->redirect('/employees');
     }
+
+    /**
+     * Show Municipality Settings Page
+     */
+    public function showSettings() {
+        Auth::requireRole(['Municipality Administrator']);
+        
+        $coreDb = Database::getCoreConnection();
+        // Self-repair check for logo_path column
+        try {
+            $coreDb->query("SELECT logo_path FROM municipalities LIMIT 1");
+        } catch (PDOException $e) {
+            $coreDb->exec("ALTER TABLE municipalities ADD COLUMN logo_path VARCHAR(255) DEFAULT NULL");
+        }
+
+        $subdomain = getActiveTenant();
+        $stmt = $coreDb->prepare("SELECT * FROM municipalities WHERE subdomain = ? LIMIT 1");
+        $stmt->execute([$subdomain]);
+        $muni = $stmt->fetch();
+
+        if (!$muni) {
+            die("Municipality profile for tenant [$subdomain] not found in core registry.");
+        }
+
+        $this->render('admin/settings', [
+            'title' => 'Municipality Settings | DorpFlow',
+            'muni' => $muni,
+            'csrf_token' => $this->getCsrfToken()
+        ]);
+    }
+
+    /**
+     * Process Municipality Settings Update
+     */
+    public function updateSettings() {
+        $this->validateCsrf();
+        Auth::requireRole(['Municipality Administrator']);
+
+        $coreDb = Database::getCoreConnection();
+        $subdomain = getActiveTenant();
+
+        $stmt = $coreDb->prepare("SELECT * FROM municipalities WHERE subdomain = ? LIMIT 1");
+        $stmt->execute([$subdomain]);
+        $muni = $stmt->fetch();
+
+        if (!$muni) {
+            die("Municipality profile not found.");
+        }
+
+        $apiKey = $_POST['api_key'] ?? '';
+        $apiSecret = $_POST['api_secret'] ?? '';
+
+        if (empty($apiKey) || empty($apiSecret)) {
+            $this->redirect('/admin/settings');
+            return;
+        }
+
+        // Handle file upload for logo
+        $logoPath = $muni['logo_path'];
+        if (isset($_FILES['logo']) && $_FILES['logo']['error'] === UPLOAD_ERR_OK) {
+            $fileTmpPath = $_FILES['logo']['tmp_name'];
+            $fileName = $_FILES['logo']['name'];
+            $fileExtension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+
+            $allowedExtensions = ['jpg', 'jpeg', 'png', 'svg'];
+            if (in_array($fileExtension, $allowedExtensions)) {
+                $uploadDir = ROOT_PATH . '/public/uploads/logos/';
+                if (!is_dir($uploadDir)) {
+                    mkdir($uploadDir, 0777, true);
+                }
+
+                $newFileName = $subdomain . '_logo_' . time() . '.' . $fileExtension;
+                $destPath = $uploadDir . $newFileName;
+
+                if (move_uploaded_file($fileTmpPath, $destPath)) {
+                    $logoPath = '/public/uploads/logos/' . $newFileName;
+                    // Invalidate session cache
+                    unset($_SESSION['tenant_logo_' . $subdomain]);
+                }
+            }
+        }
+
+        // Update core record
+        $stmtUpdate = $coreDb->prepare("
+            UPDATE municipalities 
+            SET api_key = ?, api_secret = ?, logo_path = ?
+            WHERE subdomain = ?
+        ");
+        $stmtUpdate->execute([$apiKey, $apiSecret, $logoPath, $subdomain]);
+
+        // Audit Log
+        $audit = new AuditLog();
+        $audit->log($_SESSION['user_id'], "Updated municipality settings, logo profile, and REST API credentials.");
+
+        // Update session cache
+        $_SESSION['tenant_logo_' . $subdomain] = APP_URL . $logoPath;
+
+        $_SESSION['success_message'] = "Municipality settings updated successfully!";
+        $this->redirect('/admin/settings');
+    }
 }

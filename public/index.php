@@ -60,6 +60,8 @@ $router->add('departments/create', 'AdminController', 'processCreateDepartment',
 $router->add('employees', 'AdminController', 'listEmployees', 'GET');
 $router->add('employees/create', 'AdminController', 'showCreateEmployee', 'GET');
 $router->add('employees/create', 'AdminController', 'processCreateEmployee', 'POST');
+$router->add('admin/settings', 'AdminController', 'showSettings', 'GET');
+$router->add('admin/settings/update', 'AdminController', 'updateSettings', 'POST');
 
 // 5. REST API Gateways
 $router->add('api/v1/tickets', 'APIController', 'getTickets', 'GET');

@@ -53,6 +53,9 @@
                         <label class="form-label d-block"><i class="fa-solid fa-map-pin text-danger me-1"></i>Select Location coordinates on Map *</label>
                         <span class="text-muted d-block mb-2" style="font-size:0.75rem;">Click on the map grid below to mark the coordinates automatically.</span>
                         <div id="coordinatePickerMap" style="height: 250px; border-radius:10px; border:1px solid var(--border-color);" class="mb-3"></div>
+                        <button type="button" class="btn btn-sm btn-outline-primary mb-3" onclick="useCurrentLocation()">
+                            <i class="fa-solid fa-location-crosshairs me-1"></i> Capture My Current Location
+                        </button>
                         
                         <div class="row g-2">
                             <div class="col-6">
@@ -78,36 +81,53 @@
 </div>
 
 <script>
+    let marker = null;
+    let map = null;
+
     window.addEventListener('load', function() {
         // Default center at Stellenbosch coordinates
-        const map = L.map('coordinatePickerMap').setView([-33.9321, 18.8602], 13);
+        map = L.map('coordinatePickerMap').setView([-33.9321, 18.8602], 13);
         
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; OpenStreetMap contributors'
         }).addTo(map);
 
-        let marker = null;
-
         map.on('click', function(e) {
-            const lat = e.latlng.lat;
-            const lng = e.latlng.lng;
-            
-            document.getElementById('latVal').value = lat.toFixed(6);
-            document.getElementById('lngVal').value = lng.toFixed(6);
-
-            if (marker !== null) {
-                map.removeLayer(marker);
-            }
-            marker = L.marker([lat, lng]).addTo(map)
-                .bindPopup("Selected coordinate location.").openPopup();
+            updateMarker(e.latlng.lat, e.latlng.lng);
         });
     });
+
+    function updateMarker(lat, lng) {
+        document.getElementById('latVal').value = lat.toFixed(6);
+        document.getElementById('lngVal').value = lng.toFixed(6);
+
+        if (marker !== null) {
+            map.removeLayer(marker);
+        }
+        marker = L.marker([lat, lng]).addTo(map)
+            .bindPopup("Selected coordinate location.").openPopup();
+        map.setView([lat, lng], 16);
+    }
+
+    function useCurrentLocation() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function(position) {
+                const lat = position.coords.latitude;
+                const lng = position.coords.longitude;
+                updateMarker(lat, lng);
+            }, function(error) {
+                alert("Geolocation failed: " + error.message);
+            });
+        } else {
+            alert("Geolocation is not supported by your browser.");
+        }
+    }
 
     function validateForm() {
         const lat = document.getElementById('latVal').value;
         const lng = document.getElementById('lngVal').value;
         if (!lat || !lng) {
-            alert('Please select the fault location on the map before submitting.');
+            alert('Please select the fault location on the map or capture your location before submitting.');
             return false;
         }
         return true;

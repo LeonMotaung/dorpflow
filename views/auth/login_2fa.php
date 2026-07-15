@@ -57,7 +57,7 @@
 <body>
     <div class="login-card p-5">
         <div class="text-center mb-4">
-            <img src="<?php echo APP_URL; ?>/dorpflow.png" alt="DorpFlow Logo" style="max-height: 45px;" class="mb-3">
+            <img src="<?php echo getMunicipalityLogo(); ?>" alt="Logo" style="max-height: 45px; border-radius: 6px;" class="mb-3">
             <h4 class="fw-bold text-primary mb-1">MFA Security Check</h4>
             <p class="text-muted small">We've sent a 2FA OTP code to protect your administrative console permissions.</p>
         </div>

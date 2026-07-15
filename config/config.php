@@ -49,3 +49,33 @@ function getActiveTenant() {
     // Default fallback to core (Super Admin context)
     return 'core';
 }
+
+/**
+ * Get active municipality custom logo path
+ */
+function getMunicipalityLogo() {
+    $tenant = getActiveTenant();
+    if ($tenant === 'core' || empty($tenant)) {
+        return APP_URL . '/dorpflow.png';
+    }
+    
+    if (isset($_SESSION['tenant_logo_' . $tenant])) {
+        return $_SESSION['tenant_logo_' . $tenant];
+    }
+    
+    try {
+        $coreDb = Database::getCoreConnection();
+        $stmt = $coreDb->prepare("SELECT logo_path FROM municipalities WHERE subdomain = ? LIMIT 1");
+        $stmt->execute([$tenant]);
+        $logo = $stmt->fetchColumn();
+        
+        if ($logo) {
+            $_SESSION['tenant_logo_' . $tenant] = APP_URL . $logo;
+            return APP_URL . $logo;
+        }
+    } catch (Exception $e) {
+        // Fallback
+    }
+    
+    return APP_URL . '/dorpflow.png';
+}

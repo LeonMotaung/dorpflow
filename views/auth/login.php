@@ -247,7 +247,7 @@
         
         <!-- Header -->
         <div class="text-center py-4 border-bottom bg-white">
-            <img src="<?php echo APP_URL; ?>/dorpflow.png" alt="DorpFlow Logo" style="max-height: 42px;">
+            <img src="<?php echo getMunicipalityLogo(); ?>" alt="Logo" style="max-height: 45px; border-radius: 6px;">
             <p class="mb-0 text-muted mt-2" style="font-size:0.75rem; font-weight:700; letter-spacing:0.05em; color: var(--text-muted) !important;">MUNICIPAL OPERATIONS LOGIN</p>
         </div>
 
