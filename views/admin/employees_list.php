@@ -57,6 +57,7 @@ $blockOnboarding = $stmtBlock->fetchColumn() ?: 0;
                     <th>Email Address</th>
                     <th>Mobile Phone</th>
                     <th>Assigned Role</th>
+                    <th>Department</th>
                     <th>Status</th>
                     <th style="width: 100px; text-align: center;">Actions</th>
                 </tr>
@@ -64,7 +65,7 @@ $blockOnboarding = $stmtBlock->fetchColumn() ?: 0;
             <tbody>
                 <?php if (empty($employees)): ?>
                     <tr>
-                        <td colspan="7" class="text-center py-5 text-muted">No staff employees registered yet.</td>
+                        <td colspan="8" class="text-center py-5 text-muted">No staff employees registered yet.</td>
                     </tr>
                 <?php else: ?>
                     <?php foreach ($employees as $e): ?>
@@ -82,6 +83,9 @@ $blockOnboarding = $stmtBlock->fetchColumn() ?: 0;
                             <td><?php echo htmlspecialchars($e['phone']); ?></td>
                             <td>
                                 <span class="badge bg-primary-subtle text-primary"><?php echo $e['role_name']; ?></span>
+                            </td>
+                            <td>
+                                <span class="badge bg-info-subtle text-info fw-semibold"><?php echo htmlspecialchars($e['department_name'] ?: 'General / Unassigned'); ?></span>
                             </td>
                             <td>
                                 <span class="badge <?php 

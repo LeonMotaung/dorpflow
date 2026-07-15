@@ -49,6 +49,16 @@
                     </select>
                 </div>
 
+                <div class="mb-3">
+                    <label class="form-label" for="empDept">Assigned Department</label>
+                    <select name="department_id" class="form-select" id="empDept">
+                        <option value="">-- No Department / Unassigned --</option>
+                        <?php foreach ($departments as $d): ?>
+                            <option value="<?php echo $d['id']; ?>"><?php echo htmlspecialchars($d['name']); ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+
                 <div class="mb-4">
                     <label class="form-label" for="empPass">Set Initial Password *</label>
                     <input type="password" name="password" class="form-control" id="empPass" placeholder="••••••••" required minlength="6">

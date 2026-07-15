@@ -22,6 +22,13 @@ class AdminController extends Controller {
             $db->exec("ALTER TABLE users ADD COLUMN id_number VARCHAR(20) DEFAULT NULL");
         }
 
+        // Self-repair: Ensure users table has department_id column
+        try {
+            $db->query("SELECT department_id FROM users LIMIT 1");
+        } catch (PDOException $e) {
+            $db->exec("ALTER TABLE users ADD COLUMN department_id INT DEFAULT NULL");
+        }
+
         // Self-repair: Ensure municipalities table in core has block_onboarding column
         $coreDb = Database::getCoreConnection();
         try {
@@ -102,9 +109,10 @@ class AdminController extends Controller {
     public function listEmployees() {
         $db = Database::getConnection();
         $employees = $db->query("
-            SELECT u.*, r.name as role_name 
+            SELECT u.*, r.name as role_name, d.name as department_name 
             FROM users u
             LEFT JOIN roles r ON r.id = u.role_id
+            LEFT JOIN departments d ON d.id = u.department_id
             WHERE r.name != 'Resident' AND r.name != 'Super Admin'
             ORDER BY u.full_name ASC
         ")->fetchAll();
@@ -198,12 +206,17 @@ class AdminController extends Controller {
             return;
         }
 
+        $departmentId = $_POST['department_id'] ?? null;
+        if (empty($departmentId)) {
+            $departmentId = null;
+        }
+
         $passwordHash = password_hash($password, PASSWORD_DEFAULT);
         $stmtInsert = $db->prepare("
-            INSERT INTO users (role_id, email, password_hash, full_name, phone, id_number)
-            VALUES (?, ?, ?, ?, ?, ?)
+            INSERT INTO users (role_id, email, password_hash, full_name, phone, id_number, department_id)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
         ");
-        $stmtInsert->execute([$roleId, $email, $passwordHash, $fullName, $phone, $idNumber]);
+        $stmtInsert->execute([$roleId, $email, $passwordHash, $fullName, $phone, $idNumber, $departmentId]);
 
         // Audit Log
         $audit = new AuditLog();
@@ -330,11 +343,13 @@ class AdminController extends Controller {
         }
 
         $roles = $db->query("SELECT * FROM roles WHERE name != 'Resident' AND name != 'Super Admin' ORDER BY name ASC")->fetchAll();
+        $departments = $db->query("SELECT * FROM departments ORDER BY name ASC")->fetchAll();
         
         $this->render('admin/employee_edit', [
             'title' => 'Edit Employee | DorpFlow',
             'employee' => $employee,
             'roles' => $roles,
+            'departments' => $departments,
             'csrf_token' => $this->getCsrfToken()
         ]);
     }
@@ -370,13 +385,18 @@ class AdminController extends Controller {
             return;
         }
 
+        $departmentId = $_POST['department_id'] ?? null;
+        if (empty($departmentId)) {
+            $departmentId = null;
+        }
+
         // Update employee details
         $stmtUpdate = $db->prepare("
             UPDATE users 
-            SET role_id = ?, email = ?, full_name = ?, phone = ?, id_number = ?, salary = ?, is_locked = ?
+            SET role_id = ?, email = ?, full_name = ?, phone = ?, id_number = ?, salary = ?, is_locked = ?, department_id = ?
             WHERE id = ?
         ");
-        $stmtUpdate->execute([$roleId, $email, $fullName, $phone, $idNumber, $salary, $isLocked, $id]);
+        $stmtUpdate->execute([$roleId, $email, $fullName, $phone, $idNumber, $salary, $isLocked, $departmentId, $id]);
 
         // If optional password is provided
         $password = $_POST['password'] ?? '';

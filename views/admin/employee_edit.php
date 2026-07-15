@@ -51,6 +51,16 @@
                     </div>
 
                     <div class="col-md-6">
+                        <label class="form-label fw-semibold" for="empDept">Assigned Department</label>
+                        <select class="form-select" name="department_id" id="empDept">
+                            <option value="">-- No Department / Unassigned --</option>
+                            <?php foreach ($departments as $d): ?>
+                                <option value="<?php echo $d['id']; ?>" <?php echo $employee['department_id'] == $d['id'] ? 'selected' : ''; ?>><?php echo htmlspecialchars($d['name']); ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+
+                    <div class="col-md-6">
                         <label class="form-label fw-semibold" for="empSalary">Base Salary (ZAR)</label>
                         <div class="input-group">
                             <span class="input-group-text">R</span>
