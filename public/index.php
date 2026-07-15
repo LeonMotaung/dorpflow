@@ -64,6 +64,10 @@ $router->add('employees/create', 'AdminController', 'processCreateEmployee', 'PO
 // 5. REST API Gateways
 $router->add('api/v1/tickets', 'APIController', 'getTickets', 'GET');
 $router->add('api/v1/assets', 'APIController', 'getAssets', 'GET');
+$router->add('api/v1/telemetry', 'APIController', 'postTelemetry', 'POST');
+$router->add('api/v1/prepaid/purchase', 'APIController', 'purchasePrepaidToken', 'POST');
+$router->add('api/v1/webhooks/whatsapp', 'APIController', 'whatsappWebhook', 'POST');
+$router->add('api/v1/scm/verify', 'APIController', 'verifySupplier', 'GET');
 
 // 6. Smart City Operations
 $router->add('status', 'SmartOpsController', 'showPublicStatus', 'GET');
