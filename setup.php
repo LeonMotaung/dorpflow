@@ -106,7 +106,8 @@ try {
     // 3. Create Tenant Databases
     $tenants = [
         'dorpflow_tenant_stellenbosch' => 'Stellenbosch',
-        'dorpflow_tenant_tshwane' => 'Tshwane'
+        'dorpflow_tenant_tshwane' => 'Tshwane',
+        'dorpflow_tenant_mafube' => 'Mafube'
     ];
 
     foreach ($tenants as $dbName => $displayName) {
