@@ -271,20 +271,20 @@ try {
         $stmtUser = $pdo->prepare("INSERT INTO users (role_id, email, password_hash, full_name, phone) VALUES (?, ?, ?, ?, ?)");
         
         // Admin
-        $stmtUser->execute([$roleIds['Municipality Administrator'], 'admin@' . strtolower($displayName) . '.gov.za', $hash, "$displayName Admin", '0125550101']);
+        $stmtUser->execute([$roleIds['Municipality Administrator'], 'admin@' . strtolower($displayName) . '.com', $hash, "$displayName Admin", '0125550101']);
         
         // Manager
-        $stmtUser->execute([$roleIds['Department Manager'], 'manager@' . strtolower($displayName) . '.gov.za', $hash, "Elena Ndlovu", '0125550102']);
+        $stmtUser->execute([$roleIds['Department Manager'], 'manager@' . strtolower($displayName) . '.com', $hash, "Elena Ndlovu", '0125550102']);
         $mgrId = $pdo->lastInsertId();
 
         // Supervisor
-        $stmtUser->execute([$roleIds['Supervisor'], 'supervisor@' . strtolower($displayName) . '.gov.za', $hash, "Thabo Molefe", '0125550103']);
+        $stmtUser->execute([$roleIds['Supervisor'], 'supervisor@' . strtolower($displayName) . '.com', $hash, "Thabo Molefe", '0125550103']);
         
         // Technicians
-        $stmtUser->execute([$roleIds['Technician'], 'tech1@' . strtolower($displayName) . '.gov.za', $hash, "Jaco Pieterse", '0825554321']);
+        $stmtUser->execute([$roleIds['Technician'], 'tech1@' . strtolower($displayName) . '.com', $hash, "Jaco Pieterse", '0825554321']);
         $techId1 = $pdo->lastInsertId();
         
-        $stmtUser->execute([$roleIds['Technician'], 'tech2@' . strtolower($displayName) . '.gov.za', $hash, "Sipho Gumede", '0835556543']);
+        $stmtUser->execute([$roleIds['Technician'], 'tech2@' . strtolower($displayName) . '.com', $hash, "Sipho Gumede", '0835556543']);
         $techId2 = $pdo->lastInsertId();
 
         // Resident

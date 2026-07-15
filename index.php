@@ -1425,7 +1425,7 @@
                                     <div class="window-dot green"></div>
                                 </div>
                                 <div class="text-muted" style="font-size:0.8rem; font-weight:600;">
-                                    <i class="fa-solid fa-lock me-1"></i> admin.dorpflow.gov.za
+                                    <i class="fa-solid fa-lock me-1"></i> admin.dorpflow.com
                                 </div>
                                 <div style="width: 40px;"></div>
                             </div>
@@ -2515,7 +2515,7 @@
                                 <button type="submit" class="btn btn-custom btn-accent-custom px-4 text-nowrap">Book Demo</button>
                             </form>
                             <div class="mt-3 text-white-50" style="font-size: 0.85rem;">
-                                Or contact our public sector team directly: <strong class="text-white">sales@dorpflow.gov.za</strong>
+                                Or contact our public sector team directly: <strong class="text-white">sales@dorpflow.com</strong>
                             </div>
                         </div>
                     </div>

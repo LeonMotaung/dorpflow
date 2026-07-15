@@ -10,8 +10,8 @@ define('APP_URL', 'http://localhost/dorpflow');
 // Global Platform Meta
 define('PLATFORM_NAME', 'DorpFlow');
 define('CSD_VENDOR_NUMBER', 'MAAA0982319');
-define('SUPPORT_EMAIL', 'support@dorpflow.gov.za');
-define('SALES_EMAIL', 'sales@dorpflow.gov.za');
+define('SUPPORT_EMAIL', 'support@dorpflow.com');
+define('SALES_EMAIL', 'sales@dorpflow.com');
 
 // Session configuration
 ini_set('session.cookie_httponly', 1);

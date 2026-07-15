@@ -34,7 +34,7 @@
                     <li class="list-group-item d-flex justify-content-between align-items-center py-3 px-0 border-light">
                         <div>
                             <strong><?php echo $s['name']; ?></strong>
-                            <small class="d-block text-muted"><code><?php echo $s['subdomain']; ?>.dorpflow.gov.za</code></small>
+                            <small class="d-block text-muted"><code><?php echo $s['subdomain']; ?>.dorpflow.com</code></small>
                         </div>
                         <span class="badge bg-primary text-white rounded-pill px-3 py-2" style="font-size:0.85rem; font-weight:600;">
                             <?php echo $s['total_hits']; ?> Hits

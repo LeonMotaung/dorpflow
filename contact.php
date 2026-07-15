@@ -577,7 +577,7 @@
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label" for="contactEmail">Official Municipal Email *</label>
-                                <input type="email" class="form-control" id="contactEmail" placeholder="s.dube@mangaung.gov.za" required>
+                                <input type="email" class="form-control" id="contactEmail" placeholder="s.dube@mangaung.com" required>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label" for="contactPhone">Contact Hotline Number *</label>
@@ -676,14 +676,14 @@
                                 <div class="contact-info-icon"><i class="fa-solid fa-envelope"></i></div>
                                 <div class="contact-info-details">
                                     <h6>Sales & RFPs</h6>
-                                    <p>sales@dorpflow.gov.za</p>
+                                    <p>sales@dorpflow.com</p>
                                 </div>
                             </li>
                             <li class="contact-info-item">
                                 <div class="contact-info-icon"><i class="fa-solid fa-headset"></i></div>
                                 <div class="contact-info-details">
                                     <h6>Technical Helpdesk</h6>
-                                    <p>support@dorpflow.gov.za</p>
+                                    <p>support@dorpflow.com</p>
                                 </div>
                             </li>
                             <li class="contact-info-item">

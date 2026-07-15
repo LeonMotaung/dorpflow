@@ -45,7 +45,7 @@
 
                     <div class="col-12">
                         <label class="form-label">Allowed Domains Network Firewall (comma-separated)</label>
-                        <textarea class="form-control" rows="3">dorpflow.gov.za, stellenbosch.gov.za, tshwane.gov.za</textarea>
+                        <textarea class="form-control" rows="3">dorpflow.com, stellenbosch.com, tshwane.com</textarea>
                     </div>
 
                     <div class="col-12 mt-4 pt-3 border-top">

@@ -263,7 +263,7 @@
                 
                 <div class="mb-3">
                     <label for="loginEmail" class="form-label">Official / Personal Email</label>
-                    <input type="email" name="email" class="form-control" id="loginEmail" placeholder="e.g. admin@stellenbosch.gov.za" required>
+                    <input type="email" name="email" class="form-control" id="loginEmail" placeholder="e.g. admin@stellenbosch.com" required>
                 </div>
                 
                 <div class="mb-3">

@@ -129,7 +129,7 @@ class SuperAdminController extends Controller {
             // Seed Default Admin User
             $hash = password_hash('password', PASSWORD_DEFAULT);
             $stmtUser = $tenantPdo->prepare("INSERT INTO users (role_id, email, password_hash, full_name, phone) VALUES (?, ?, ?, ?, ?)");
-            $stmtUser->execute([$roleIds['Municipality Administrator'], 'admin@' . $subdomain . '.gov.za', $hash, "$name Admin", '0125550101']);
+            $stmtUser->execute([$roleIds['Municipality Administrator'], 'admin@' . $subdomain . '.com', $hash, "$name Admin", '0125550101']);
             
             // Seed Default Wards
             $wards = [
@@ -373,12 +373,12 @@ class SuperAdminController extends Controller {
         $pdf->Cell(90, 5, $muni['name'], 0, 1);
         
         $pdf->Cell(100, 5, '124 Jacaranda Ave, Hatfield, Pretoria, 0083', 0, 0);
-        $pdf->Cell(90, 5, 'Subdomain: ' . $muni['subdomain'] . '.dorpflow.gov.za', 0, 1);
+        $pdf->Cell(90, 5, 'Subdomain: ' . $muni['subdomain'] . '.dorpflow.com', 0, 1);
         
         $pdf->Cell(100, 5, 'CSD Vendor Number: MAAA0982319', 0, 0);
         $pdf->Cell(90, 5, 'Billing Cycle: Monthly', 0, 1);
         
-        $pdf->Cell(100, 5, 'support@dorpflow.gov.za', 0, 0);
+        $pdf->Cell(100, 5, 'support@dorpflow.com', 0, 0);
         $pdf->Cell(90, 5, 'Status: Active', 0, 1);
 
         $pdf->Ln(10);

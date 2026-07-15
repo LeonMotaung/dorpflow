@@ -44,7 +44,7 @@
                     <label class="form-label">Subdomain Prefix *</label>
                     <div class="input-group">
                         <input type="text" name="subdomain" class="form-control text-lowercase" placeholder="mafube" required>
-                        <span class="input-group-text">.dorpflow.gov.za</span>
+                        <span class="input-group-text">.dorpflow.com</span>
                     </div>
                 </div>
 

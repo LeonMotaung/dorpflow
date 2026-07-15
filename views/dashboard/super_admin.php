@@ -59,7 +59,7 @@
                 <?php foreach ($municipalities as $m): ?>
                     <tr>
                         <td><strong><?php echo $m['name']; ?></strong></td>
-                        <td><code><?php echo $m['subdomain']; ?>.dorpflow.gov.za</code></td>
+                        <td><code><?php echo $m['subdomain']; ?>.dorpflow.com</code></td>
                         <td><span class="badge bg-primary-subtle text-primary"><?php echo $m['plan']; ?></span></td>
                         <td><strong>R<?php echo number_format($m['sub_price'], 2); ?></strong></td>
                         <td>

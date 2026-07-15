@@ -111,7 +111,7 @@
             DorpFlow is an enterprise SaaS platform. Due to POPIA compliance, database isolation, and security provisioning, individual municipalities must be onboarded directly by our Technical Procurement team.
         </p>
         <div class="alert alert-info py-3 mb-4 rounded-3 text-start" style="font-size:0.85rem;">
-            <i class="fa-solid fa-info-circle me-2 text-primary"></i> If you are a resident or citizen looking to log a ticket, please access your municipality's specific subdomain (e.g. <code>stellenbosch.dorpflow.gov.za/register</code>).
+            <i class="fa-solid fa-info-circle me-2 text-primary"></i> If you are a resident or citizen looking to log a ticket, please access your municipality's specific subdomain (e.g. <code>stellenbosch.dorpflow.com/register</code>).
         </div>
         <div class="d-grid gap-3">
             <a href="<?php echo APP_URL; ?>/contact.php" class="btn btn-custom btn-primary-custom py-3"><i class="fa-regular fa-calendar-check me-2"></i> Book Onboarding & Demo</a>
