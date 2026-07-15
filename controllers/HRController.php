@@ -4,7 +4,7 @@
  */
 
 require_once ROOT_PATH . '/core/Controller.php';
-require_once ROOT_PATH . '/core/Auth';
+require_once ROOT_PATH . '/core/Auth.php';
 require_once ROOT_PATH . '/models/AuditLog.php';
 
 class HRController extends Controller {
