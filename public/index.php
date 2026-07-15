@@ -62,6 +62,10 @@ $router->add('employees/create', 'AdminController', 'showCreateEmployee', 'GET')
 $router->add('employees/create', 'AdminController', 'processCreateEmployee', 'POST');
 $router->add('admin/settings', 'AdminController', 'showSettings', 'GET');
 $router->add('admin/settings/update', 'AdminController', 'updateSettings', 'POST');
+$router->add('admin/hr-payroll', 'HRController', 'index', 'GET');
+$router->add('admin/hr-payroll/gateway', 'HRController', 'updateGateway', 'POST');
+$router->add('admin/hr-payroll/salaries', 'HRController', 'updateSalaries', 'POST');
+$router->add('admin/hr-payroll/disburse', 'HRController', 'runPayRun', 'POST');
 
 // 5. REST API Gateways
 $router->add('api/v1/tickets', 'APIController', 'getTickets', 'GET');

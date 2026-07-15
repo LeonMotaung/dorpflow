@@ -185,6 +185,7 @@ $tenant = getActiveTenant();
                     <li><a href="<?php echo APP_URL; ?>/public/index.php/admin/whatsapp-bot"><i class="fa-brands fa-whatsapp"></i> WhatsApp Bot</a></li>
                     <?php if ($user['role'] === 'Municipality Administrator'): ?>
                         <li><a href="<?php echo APP_URL; ?>/public/index.php/admin/settings"><i class="fa-solid fa-sliders"></i> Muni Settings</a></li>
+                        <li><a href="<?php echo APP_URL; ?>/public/index.php/admin/hr-payroll"><i class="fa-solid fa-hand-holding-dollar"></i> HR & Payroll</a></li>
                     <?php endif; ?>
                 <?php elseif ($user['role'] === 'Technician'): ?>
                     <li><a href="<?php echo APP_URL; ?>/public/index.php/technician/dashboard"><i class="fa-solid fa-truck-pickup"></i> Today's Dispatches</a></li>
