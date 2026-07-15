@@ -32,6 +32,7 @@
                 <div class="mb-3">
                     <label class="form-label fw-semibold" for="gatewaySelect">Active Gateway Channel</label>
                     <select name="payment_gateway" id="gatewaySelect" class="form-select">
+                        <option value="Yoco" <?php echo ($muni['payment_gateway'] ?? '') === 'Yoco' ? 'selected' : ''; ?>>Yoco (Card & EFT Gateway)</option>
                         <option value="Peach Payments" <?php echo ($muni['payment_gateway'] ?? '') === 'Peach Payments' ? 'selected' : ''; ?>>Peach Payments</option>
                         <option value="PayFast" <?php echo ($muni['payment_gateway'] ?? '') === 'PayFast' ? 'selected' : ''; ?>>PayFast</option>
                         <option value="Ozow" <?php echo ($muni['payment_gateway'] ?? '') === 'Ozow' ? 'selected' : ''; ?>>Ozow Instant EFT</option>
