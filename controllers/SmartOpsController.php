@@ -211,4 +211,160 @@ class SmartOpsController extends Controller {
 
         $this->redirect('/dashboard?success=loadshedding_alert_sent');
     }
+
+    /**
+     * Show Municipality Communications Broadcast Console
+     */
+    public function showBroadcast() {
+        Auth::requireRole(['Municipality Administrator', 'Department Manager', 'Supervisor']);
+        
+        $db = Database::getConnection();
+        $core = Database::getCoreConnection();
+        $tenant = getActiveTenant();
+
+        // 1. Fetch SMS Balance
+        $stmtMuni = $core->prepare("SELECT id, name, sms_balance FROM municipalities WHERE subdomain = ? LIMIT 1");
+        $stmtMuni->execute([$tenant]);
+        $muni = $stmtMuni->fetch();
+
+        // 2. Count recipients
+        $residentCount = $db->query("
+            SELECT COUNT(*) FROM users u 
+            JOIN roles r ON r.id = u.role_id 
+            WHERE r.name = 'Resident' AND u.phone IS NOT NULL AND u.phone != ''
+        ")->fetchColumn() ?: 0;
+
+        $staffCount = $db->query("
+            SELECT COUNT(*) FROM users u 
+            JOIN roles r ON r.id = u.role_id 
+            WHERE r.name != 'Resident' AND r.name != 'Super Admin' AND u.phone IS NOT NULL AND u.phone != ''
+        ")->fetchColumn() ?: 0;
+
+        $techCount = $db->query("
+            SELECT COUNT(*) FROM users u 
+            JOIN roles r ON r.id = u.role_id 
+            WHERE r.name = 'Technician' AND u.phone IS NOT NULL AND u.phone != ''
+        ")->fetchColumn() ?: 0;
+
+        // 3. Fetch past 20 messages log
+        $stmtLogs = $core->prepare("
+            SELECT * FROM sms_gateway_logs 
+            WHERE municipality_id = ? 
+            ORDER BY created_at DESC 
+            LIMIT 20
+        ");
+        $stmtLogs->execute([$muni['id']]);
+        $pastLogs = $stmtLogs->fetchAll();
+
+        $this->render('admin/broadcast', [
+            'title' => 'Muni Communication Console | DorpFlow',
+            'muni' => $muni,
+            'resident_count' => $residentCount,
+            'staff_count' => $staffCount,
+            'tech_count' => $techCount,
+            'past_logs' => $pastLogs,
+            'csrf_token' => $this->getCsrfToken()
+        ]);
+    }
+
+    /**
+     * Process and dispatch SMS/WhatsApp Broadcast
+     */
+    public function sendBroadcast() {
+        Auth::requireRole(['Municipality Administrator', 'Department Manager', 'Supervisor']);
+        $this->validateCsrf();
+
+        $recipientType = $_POST['recipient_type'] ?? '';
+        $customNumber = $_POST['custom_number'] ?? '';
+        $messageText = $_POST['message_text'] ?? '';
+        $provider = $_POST['provider'] ?? 'DorpFlow-SMS'; // SMS or WhatsApp
+
+        if (empty($messageText) || empty($recipientType)) {
+            $_SESSION['error_message'] = "Message text and recipient selection are required.";
+            $this->redirect('/admin/broadcast');
+            return;
+        }
+
+        $db = Database::getConnection();
+        $core = Database::getCoreConnection();
+        $tenant = getActiveTenant();
+
+        // 1. Fetch Municipality Core Balance
+        $stmtMuni = $core->prepare("SELECT id, name, sms_balance FROM municipalities WHERE subdomain = ? LIMIT 1");
+        $stmtMuni->execute([$tenant]);
+        $muni = $stmtMuni->fetch();
+
+        if (!$muni) {
+            die("Municipality core profile not found.");
+        }
+
+        // 2. Resolve target numbers
+        $numbers = [];
+        if ($recipientType === 'all') {
+            $numbers = $db->query("
+                SELECT phone FROM users u 
+                JOIN roles r ON r.id = u.role_id 
+                WHERE r.name = 'Resident' AND u.phone IS NOT NULL AND u.phone != ''
+            ")->fetchAll(PDO::FETCH_COLUMN);
+        } elseif ($recipientType === 'staff') {
+            $numbers = $db->query("
+                SELECT phone FROM users u 
+                JOIN roles r ON r.id = u.role_id 
+                WHERE r.name != 'Resident' AND r.name != 'Super Admin' AND u.phone IS NOT NULL AND u.phone != ''
+            ")->fetchAll(PDO::FETCH_COLUMN);
+        } elseif ($recipientType === 'technicians') {
+            $numbers = $db->query("
+                SELECT phone FROM users u 
+                JOIN roles r ON r.id = u.role_id 
+                WHERE r.name = 'Technician' AND u.phone IS NOT NULL AND u.phone != ''
+            ")->fetchAll(PDO::FETCH_COLUMN);
+        } elseif ($recipientType === 'custom') {
+            if (empty($customNumber)) {
+                $_SESSION['error_message'] = "Custom phone number is required.";
+                $this->redirect('/admin/broadcast');
+                return;
+            }
+            $numbers = [$customNumber];
+        }
+
+        $recipientCount = count($numbers);
+        if ($recipientCount === 0) {
+            $_SESSION['error_message'] = "No valid phone numbers found for the selected recipient group.";
+            $this->redirect('/admin/broadcast');
+            return;
+        }
+
+        // 3. Balance verification
+        if ($muni['sms_balance'] < $recipientCount) {
+            $_SESSION['error_message'] = "Insufficient SMS credits. Required: $recipientCount, Available: " . $muni['sms_balance'] . ". Please contact system sales to purchase additional credits.";
+            $this->redirect('/admin/broadcast');
+            return;
+        }
+
+        // 4. Batch dispatch simulation & logging
+        $stmtSms = $core->prepare("
+            INSERT INTO sms_gateway_logs (municipality_id, recipient, message, provider, status, cost, profit)
+            VALUES (?, ?, ?, ?, 'delivered', 0.25, 0.10)
+        ");
+
+        foreach ($numbers as $phone) {
+            $stmtSms->execute([
+                $muni['id'],
+                $phone,
+                $messageText,
+                $provider
+            ]);
+        }
+
+        // 5. Deduct Balance
+        $stmtDeduct = $core->prepare("UPDATE municipalities SET sms_balance = sms_balance - ? WHERE id = ?");
+        $stmtDeduct->execute([$recipientCount, $muni['id']]);
+
+        // Audit Log
+        $audit = new AuditLog();
+        $audit->log($_SESSION['user_id'], "Dispatched a $provider broadcast to $recipientCount numbers. Target group: $recipientType.");
+
+        $_SESSION['success_message'] = "Broadcast successfully queued and dispatched to $recipientCount numbers via the $provider gateway.";
+        $this->redirect('/admin/broadcast');
+    }
 }

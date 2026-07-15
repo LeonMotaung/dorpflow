@@ -183,6 +183,7 @@ $tenant = getActiveTenant();
                     <li><a href="<?php echo APP_URL; ?>/public/index.php/admin/iot-telemetry"><i class="fa-solid fa-gauge-high"></i> IoT Telemetry</a></li>
                     <li><a href="<?php echo APP_URL; ?>/public/index.php/admin/scm"><i class="fa-solid fa-building-columns"></i> SCM Suppliers</a></li>
                     <li><a href="<?php echo APP_URL; ?>/public/index.php/admin/whatsapp-bot"><i class="fa-brands fa-whatsapp"></i> WhatsApp Bot</a></li>
+                    <li><a href="<?php echo APP_URL; ?>/public/index.php/admin/broadcast"><i class="fa-solid fa-bullhorn"></i> Broadcast Alerts</a></li>
                     <?php if ($user['role'] === 'Municipality Administrator'): ?>
                         <li><a href="<?php echo APP_URL; ?>/public/index.php/admin/settings"><i class="fa-solid fa-sliders"></i> Muni Settings</a></li>
                         <li><a href="<?php echo APP_URL; ?>/public/index.php/admin/hr-payroll"><i class="fa-solid fa-hand-holding-dollar"></i> HR & Payroll</a></li>

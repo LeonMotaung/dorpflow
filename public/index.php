@@ -72,6 +72,8 @@ $router->add('admin/hr-payroll/salaries', 'HRController', 'updateSalaries', 'POS
 $router->add('admin/hr-payroll/disburse', 'HRController', 'runPayRun', 'POST');
 $router->add('admin/hr-payroll/applications', 'HRController', 'listApplications', 'GET');
 $router->add('admin/hr-payroll/applications/onboard', 'HRController', 'onboardApplication', 'POST');
+$router->add('admin/broadcast', 'SmartOpsController', 'showBroadcast', 'GET');
+$router->add('admin/broadcast/send', 'SmartOpsController', 'sendBroadcast', 'POST');
 
 // 5. REST API Gateways
 $router->add('api/v1/tickets', 'APIController', 'getTickets', 'GET');
