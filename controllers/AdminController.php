@@ -13,6 +13,14 @@ class AdminController extends Controller {
     public function __construct() {
         // Enforce that only Municipality Administrators or Department Managers can access these features
         Auth::requireRole(['Municipality Administrator', 'Department Manager']);
+        
+        // Self-repair: Ensure users table has id_number column
+        $db = Database::getConnection();
+        try {
+            $db->query("SELECT id_number FROM users LIMIT 1");
+        } catch (PDOException $e) {
+            $db->exec("ALTER TABLE users ADD COLUMN id_number VARCHAR(20) DEFAULT NULL");
+        }
     }
 
     /**
@@ -103,6 +111,19 @@ class AdminController extends Controller {
      * Show Create Employee form
      */
     public function showCreateEmployee() {
+        // Check if onboarding is blocked by platform settings
+        $coreDb = Database::getCoreConnection();
+        $subdomain = getActiveTenant();
+        $stmt = $coreDb->prepare("SELECT block_onboarding FROM municipalities WHERE subdomain = ? LIMIT 1");
+        $stmt->execute([$subdomain]);
+        $blockOnboarding = $stmt->fetchColumn() ?: 0;
+
+        if ($blockOnboarding) {
+            $_SESSION['error_message'] = "Onboarding new employees is currently blocked by your municipality settings.";
+            $this->redirect('/employees');
+            return;
+        }
+
         $db = Database::getConnection();
         $roles = $db->query("SELECT * FROM roles WHERE name != 'Resident' AND name != 'Super Admin' ORDER BY name ASC")->fetchAll();
         $departments = $db->query("SELECT * FROM departments ORDER BY name ASC")->fetchAll();
@@ -121,18 +142,30 @@ class AdminController extends Controller {
     public function processCreateEmployee() {
         $this->validateCsrf();
         
+        // Check if onboarding is blocked
+        $coreDb = Database::getCoreConnection();
+        $subdomain = getActiveTenant();
+        $stmtBlock = $coreDb->prepare("SELECT block_onboarding FROM municipalities WHERE subdomain = ? LIMIT 1");
+        $stmtBlock->execute([$subdomain]);
+        if ($stmtBlock->fetchColumn()) {
+            $_SESSION['error_message'] = "Onboarding new employees is currently blocked.";
+            $this->redirect('/employees');
+            return;
+        }
+
         $fullName = $_POST['full_name'] ?? '';
         $email = $_POST['email'] ?? '';
         $phone = $_POST['phone'] ?? '';
         $roleId = $_POST['role_id'] ?? '';
         $password = $_POST['password'] ?? '';
+        $idNumber = $_POST['id_number'] ?? '';
 
-        if (empty($fullName) || empty($email) || empty($phone) || empty($roleId) || empty($password)) {
+        if (empty($fullName) || empty($email) || empty($phone) || empty($roleId) || empty($password) || empty($idNumber)) {
             $db = Database::getConnection();
             $roles = $db->query("SELECT * FROM roles WHERE name != 'Resident' AND name != 'Super Admin' ORDER BY name ASC")->fetchAll();
             $departments = $db->query("SELECT * FROM departments ORDER BY name ASC")->fetchAll();
             $this->render('admin/employee_create', [
-                'error' => 'All fields are required.',
+                'error' => 'All fields, including National ID Number, are required.',
                 'roles' => $roles,
                 'departments' => $departments,
                 'csrf_token' => $this->getCsrfToken()
@@ -159,10 +192,10 @@ class AdminController extends Controller {
 
         $passwordHash = password_hash($password, PASSWORD_DEFAULT);
         $stmtInsert = $db->prepare("
-            INSERT INTO users (role_id, email, password_hash, full_name, phone)
-            VALUES (?, ?, ?, ?, ?)
+            INSERT INTO users (role_id, email, password_hash, full_name, phone, id_number)
+            VALUES (?, ?, ?, ?, ?, ?)
         ");
-        $stmtInsert->execute([$roleId, $email, $passwordHash, $fullName, $phone]);
+        $stmtInsert->execute([$roleId, $email, $passwordHash, $fullName, $phone, $idNumber]);
 
         // Audit Log
         $audit = new AuditLog();
@@ -252,13 +285,15 @@ class AdminController extends Controller {
             }
         }
 
+        $blockOnboarding = isset($_POST['block_onboarding']) ? 1 : 0;
+
         // Update core record
         $stmtUpdate = $coreDb->prepare("
             UPDATE municipalities 
-            SET api_key = ?, api_secret = ?, logo_path = ?
+            SET api_key = ?, api_secret = ?, logo_path = ?, block_onboarding = ?
             WHERE subdomain = ?
         ");
-        $stmtUpdate->execute([$apiKey, $apiSecret, $logoPath, $subdomain]);
+        $stmtUpdate->execute([$apiKey, $apiSecret, $logoPath, $blockOnboarding, $subdomain]);
 
         // Audit Log
         $audit = new AuditLog();
@@ -269,5 +304,84 @@ class AdminController extends Controller {
 
         $_SESSION['success_message'] = "Municipality settings updated successfully!";
         $this->redirect('/admin/settings');
+    }
+
+    /**
+     * Show Edit Employee Form
+     */
+    public function showEditEmployee($params) {
+        $id = $params['id'];
+        $db = Database::getConnection();
+
+        $stmt = $db->prepare("SELECT * FROM users WHERE id = ? LIMIT 1");
+        $stmt->execute([$id]);
+        $employee = $stmt->fetch();
+
+        if (!$employee) {
+            die("Employee #$id not found.");
+        }
+
+        $roles = $db->query("SELECT * FROM roles WHERE name != 'Resident' AND name != 'Super Admin' ORDER BY name ASC")->fetchAll();
+        
+        $this->render('admin/employee_edit', [
+            'title' => 'Edit Employee | DorpFlow',
+            'employee' => $employee,
+            'roles' => $roles,
+            'csrf_token' => $this->getCsrfToken()
+        ]);
+    }
+
+    /**
+     * Process Edit Employee POST updates
+     */
+    public function processEditEmployee() {
+        $this->validateCsrf();
+        $db = Database::getConnection();
+
+        $id = $_POST['id'] ?? '';
+        $fullName = $_POST['full_name'] ?? '';
+        $email = $_POST['email'] ?? '';
+        $phone = $_POST['phone'] ?? '';
+        $roleId = $_POST['role_id'] ?? '';
+        $idNumber = $_POST['id_number'] ?? '';
+        $salary = $_POST['salary'] ?? 0.00;
+        $isLocked = isset($_POST['is_locked']) ? 1 : 0;
+
+        if (empty($id) || empty($fullName) || empty($email) || empty($phone) || empty($roleId) || empty($idNumber)) {
+            $_SESSION['error_message'] = "All fields are required.";
+            $this->redirect("/employees/edit/$id");
+            return;
+        }
+
+        // Validate unique email (excluding current user)
+        $stmtCheck = $db->prepare("SELECT id FROM users WHERE email = ? AND id != ? LIMIT 1");
+        $stmtCheck->execute([$email, $id]);
+        if ($stmtCheck->fetch()) {
+            $_SESSION['error_message'] = "Email is already registered by another employee.";
+            $this->redirect("/employees/edit/$id");
+            return;
+        }
+
+        // Update employee details
+        $stmtUpdate = $db->prepare("
+            UPDATE users 
+            SET role_id = ?, email = ?, full_name = ?, phone = ?, id_number = ?, salary = ?, is_locked = ?
+            WHERE id = ?
+        ");
+        $stmtUpdate->execute([$roleId, $email, $fullName, $phone, $idNumber, $salary, $isLocked, $id]);
+
+        // If optional password is provided
+        $password = $_POST['password'] ?? '';
+        if (!empty($password)) {
+            $hash = password_hash($password, PASSWORD_DEFAULT);
+            $stmtPass = $db->prepare("UPDATE users SET password_hash = ? WHERE id = ?");
+            $stmtPass->execute([$hash, $id]);
+        }
+
+        $audit = new AuditLog();
+        $audit->log($_SESSION['user_id'], "Updated details and status for employee $fullName (#$id). Account locked status: $isLocked.");
+
+        $_SESSION['success_message'] = "Employee details updated successfully.";
+        $this->redirect('/employees');
     }
 }

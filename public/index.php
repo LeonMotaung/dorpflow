@@ -39,6 +39,8 @@ $router->add('superadmin/api-usage', 'SuperAdminController', 'listApiUsage', 'GE
 $router->add('resident/dashboard', 'AuthController', 'showDashboard', 'GET');
 $router->add('resident/billing', 'BillingController', 'showResidentBilling', 'GET');
 $router->add('resident/billing/checkout', 'BillingController', 'processPeachCheckout', 'POST');
+$router->add('resident/careers', 'CareersController', 'index', 'GET');
+$router->add('resident/careers/apply', 'CareersController', 'apply', 'POST');
 $router->add('technician/dashboard', 'AuthController', 'showDashboard', 'GET');
 
 // 3. Ticket Operations
@@ -60,12 +62,16 @@ $router->add('departments/create', 'AdminController', 'processCreateDepartment',
 $router->add('employees', 'AdminController', 'listEmployees', 'GET');
 $router->add('employees/create', 'AdminController', 'showCreateEmployee', 'GET');
 $router->add('employees/create', 'AdminController', 'processCreateEmployee', 'POST');
+$router->add('employees/edit/{id}', 'AdminController', 'showEditEmployee', 'GET');
+$router->add('employees/edit', 'AdminController', 'processEditEmployee', 'POST');
 $router->add('admin/settings', 'AdminController', 'showSettings', 'GET');
 $router->add('admin/settings/update', 'AdminController', 'updateSettings', 'POST');
 $router->add('admin/hr-payroll', 'HRController', 'index', 'GET');
 $router->add('admin/hr-payroll/gateway', 'HRController', 'updateGateway', 'POST');
 $router->add('admin/hr-payroll/salaries', 'HRController', 'updateSalaries', 'POST');
 $router->add('admin/hr-payroll/disburse', 'HRController', 'runPayRun', 'POST');
+$router->add('admin/hr-payroll/applications', 'HRController', 'listApplications', 'GET');
+$router->add('admin/hr-payroll/applications/onboard', 'HRController', 'onboardApplication', 'POST');
 
 // 5. REST API Gateways
 $router->add('api/v1/tickets', 'APIController', 'getTickets', 'GET');

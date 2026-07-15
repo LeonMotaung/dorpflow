@@ -35,6 +35,11 @@
                 </div>
 
                 <div class="mb-3">
+                    <label class="form-label" for="empIdNumber">National ID Number *</label>
+                    <input type="text" name="id_number" class="form-control" id="empIdNumber" placeholder="e.g. 9607155089083" required>
+                </div>
+
+                <div class="mb-3">
                     <label class="form-label" for="empRole">Assigned System Role *</label>
                     <select name="role_id" class="form-select" id="empRole" required>
                         <option value="" disabled selected>Select Role</option>

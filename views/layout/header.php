@@ -186,6 +186,7 @@ $tenant = getActiveTenant();
                     <?php if ($user['role'] === 'Municipality Administrator'): ?>
                         <li><a href="<?php echo APP_URL; ?>/public/index.php/admin/settings"><i class="fa-solid fa-sliders"></i> Muni Settings</a></li>
                         <li><a href="<?php echo APP_URL; ?>/public/index.php/admin/hr-payroll"><i class="fa-solid fa-hand-holding-dollar"></i> HR & Payroll</a></li>
+                        <li><a href="<?php echo APP_URL; ?>/public/index.php/admin/hr-payroll/applications"><i class="fa-solid fa-file-invoice"></i> Job Applications</a></li>
                     <?php endif; ?>
                 <?php elseif ($user['role'] === 'Technician'): ?>
                     <li><a href="<?php echo APP_URL; ?>/public/index.php/technician/dashboard"><i class="fa-solid fa-truck-pickup"></i> Today's Dispatches</a></li>
@@ -194,6 +195,7 @@ $tenant = getActiveTenant();
                     <li><a href="<?php echo APP_URL; ?>/public/index.php/tickets/create"><i class="fa-solid fa-circle-plus"></i> File New Ticket</a></li>
                     <li><a href="<?php echo APP_URL; ?>/public/index.php/resident/billing"><i class="fa-solid fa-receipt"></i> Utility Billing</a></li>
                     <li><a href="<?php echo APP_URL; ?>/public/index.php/status"><i class="fa-solid fa-tower-broadcast"></i> Service Status</a></li>
+                    <li><a href="<?php echo APP_URL; ?>/public/index.php/resident/careers"><i class="fa-solid fa-graduation-cap"></i> Muni Careers</a></li>
                 <?php endif; ?>
             <?php endif; ?>
             

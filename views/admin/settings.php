@@ -29,10 +29,20 @@
                         <div class="logo-preview-container bg-light rounded-3 d-flex align-items-center justify-content-center border" style="width: 120px; height: 120px; overflow: hidden;">
                             <img src="<?php echo getMunicipalityLogo(); ?>" id="logoPreview" alt="Muni Logo" style="max-width: 100%; max-height: 100%; object-fit: contain;">
                         </div>
-                        <div>
+                        <div class="flex-grow-1">
                             <label class="form-label fw-semibold">Upload New Logo (JPG, PNG, SVG)</label>
-                            <input type="file" name="logo" id="logoUpload" class="form-control" accept=".png, .jpg, .jpeg, .svg" onchange="previewFile()">
-                            <small class="text-muted d-block mt-2">Recommended resolution: 250x60px. Will display on citizen portals and console sidebar headers.</small>
+                            <input type="file" name="logo" id="logoUpload" class="form-control mb-3" accept=".png, .jpg, .jpeg, .svg" onchange="previewFile()">
+                            <small class="text-muted d-block mb-3">Recommended resolution: 250x60px. Will display on citizen portals and console sidebar headers.</small>
+                            
+                            <div class="p-3 bg-light rounded-3 border">
+                                <div class="form-check form-switch d-flex justify-content-between align-items-center ps-0">
+                                    <div>
+                                        <label class="form-check-label fw-bold text-dark" for="blockOnboardingSwitch">Block Onboarding New Staff</label>
+                                        <span class="d-block text-muted small">Enable to block/lock registering new staff or employee accounts on the platform.</span>
+                                    </div>
+                                    <input class="form-check-input ms-3" type="checkbox" name="block_onboarding" id="blockOnboardingSwitch" value="1" <?php echo $muni['block_onboarding'] ? 'checked' : ''; ?> style="width: 50px; height: 26px; cursor: pointer;">
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
