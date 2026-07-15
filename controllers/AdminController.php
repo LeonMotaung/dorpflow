@@ -21,6 +21,14 @@ class AdminController extends Controller {
         } catch (PDOException $e) {
             $db->exec("ALTER TABLE users ADD COLUMN id_number VARCHAR(20) DEFAULT NULL");
         }
+
+        // Self-repair: Ensure municipalities table in core has block_onboarding column
+        $coreDb = Database::getCoreConnection();
+        try {
+            $coreDb->query("SELECT block_onboarding FROM municipalities LIMIT 1");
+        } catch (PDOException $e) {
+            $coreDb->exec("ALTER TABLE municipalities ADD COLUMN block_onboarding TINYINT(1) DEFAULT 0");
+        }
     }
 
     /**
