@@ -1,5 +1,9 @@
 # 🏛️ DorpFlow ERP
 
+<p align="center">
+  <img src="dorpflow.png" alt="DorpFlow Logo" width="280">
+</p>
+
 [![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)](#)
 [![PHP Version](https://img.shields.io/badge/PHP-%3E%3D%208.0-blue.svg)](#)
 [![Database](https://img.shields.io/badge/Database-MySQL-orange.svg)](#)
